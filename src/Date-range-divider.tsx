@@ -11,7 +11,35 @@ import {
     IDateMiddleInterval,
 } from "./utils/Date";
 
-import "./Date-range-divider.css";
+const cssStyles = {
+    datebar: {
+        border: "1px solid black",
+        height: "45px",
+        width: "100%",
+        position: "relative" as const,
+    },
+    singleDate: {
+        position: "absolute" as const,
+        height: "45px",
+        width: "10px",
+    },
+    dateRange: {
+        zIndex: 1,
+        position: "absolute" as const,
+        height: "45px",
+        backgroundColor: "blueviolet",
+    },
+    middleStart: {
+        zIndex: 2,
+        backgroundColor: "red",
+        width: "5px",
+    },
+    middleEnd: {
+        zIndex: 2,
+        backgroundColor: "blue",
+        width: "5px",
+    },
+};
 
 export const DateRangeDivider: FC = () => {
     const [count, setCount] = useState(1);
@@ -49,9 +77,9 @@ export const DateRangeDivider: FC = () => {
         const leftEnd = calcLeft(countDaysInBetween(startDate, endDate), daysBetweenOfEnd);
         return (
             <>
-                <div className="singleDate middleStart" style={{ left: `calc(${leftStart}% )` }} />
-                <div className="dateRange" style={{ left: `calc(${leftStart}% )`, width: `${leftEnd - leftStart}%` }}></div>
-                <div className="singleDate middleEnd" style={{ left: `calc(${leftEnd}% - 5px) ` }} />
+                <div style={{ ...cssStyles.singleDate, ...cssStyles.middleStart, left: `calc(${leftStart}% )` }} />
+                <div style={{ ...cssStyles.dateRange, left: `calc(${leftStart}% )`, width: `${leftEnd - leftStart}%` }}></div>
+                <div style={{ ...cssStyles.singleDate, ...cssStyles.middleEnd, left: `calc(${leftEnd}% - 5px) ` }} />
             </>
         );
     };
@@ -99,9 +127,9 @@ export const DateRangeDivider: FC = () => {
                 onChange={middleEndDateRangeHandler}
             />
             <div style={{ width: "50%" }}>
-                <div className="dateBar">
-                    <div className="singleDate" style={{ left: "calc(0% - 5px)" }}></div>
-                    <div className="singleDate" style={{ left: "calc(100% - 5px)" }}></div>
+                <div style={{ ...cssStyles.datebar }}>
+                    <div style={{ ...cssStyles.singleDate, left: "calc(0% - 5px)" }}></div>
+                    <div style={{ ...cssStyles.singleDate, left: "calc(100% - 5px)" }}></div>
                     {calcRegularIntervals(startDate, endDate, count).map(drawMiddleRange)}
                 </div>
             </div>
