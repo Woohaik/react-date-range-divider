@@ -1,0 +1,22 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended"
+    ],
+    "rules": {
+        "no-undef": "off",
+        "react-hooks/exhaustive-deps": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "quotes": [
+            "error",
+            "double",
+            {
+                "allowTemplateLiterals": true
+            }
+        ]
+    }
+}
