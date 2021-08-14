@@ -1,12 +1,12 @@
 const DAY_IN_MS = 86400000;
 
-const setAlwaysZeroBeforeDate = (target: number): string => `${target < 10 ? "0" : ""}${target}`;
+export const setAlwaysZeroBeforeDate = (target: number): string => `${target < 10 ? "0" : ""}${target}`;
 
-const getDateElements = (date: Date) => {
+export const getDateElements = (date: Date) => {
     return {
         day: setAlwaysZeroBeforeDate(date.getDate()),
         month: setAlwaysZeroBeforeDate(date.getMonth() + 1),
-        year: date.getFullYear(),
+        year: date.getFullYear() + "",
         hour: setAlwaysZeroBeforeDate(date.getHours()),
         seconds: setAlwaysZeroBeforeDate(date.getSeconds()),
         minutes: setAlwaysZeroBeforeDate(date.getMinutes()),
@@ -16,9 +16,10 @@ const getDateElements = (date: Date) => {
 export const isInTheFuture = (shouldBePast: Date, shouldBeFuture: Date) => shouldBeFuture > shouldBePast;
 
 export const convertDateToBeginnigOfDate = (date: Date) => {
-    const resetedDate = new Date(toHTMLInputDate(date));
-    resetedDate.setHours(0, 0, 0, 0);
-    return resetedDate;
+    const newD = new Date(date);
+    // IF is already at 0- 0 - 0 -0 do nothing
+    newD.setHours(0, 0, 0, 0);
+    return newD;
 };
 
 export const countDaysInBetween = (pastDate: Date, futureDate: Date) => {
@@ -29,8 +30,8 @@ export const countDaysInBetween = (pastDate: Date, futureDate: Date) => {
 
 export const converDateToEndOfDay = (date: Date) => {
     // Firt be sure is in the beggining of the day
-    // Add 24 hours then substract a ms
     const finishOfDay = convertDateToBeginnigOfDate(date);
+    // Add 24 hours then substract a ms
     finishOfDay.setDate(finishOfDay.getDate() + 1);
     return new Date(finishOfDay.valueOf() - 1);
 };
@@ -54,6 +55,10 @@ export interface IDateMiddleInterval {
     middleStart: Date;
     middleEnd: Date;
 }
+
+const removeOneMs = (date: Date) => {
+    return new Date(date.valueOf() - 1);
+};
 
 export const calcRegularIntervals = (pastDate: Date, futureDate: Date, numbersToDivide: number) => {
     const dayDiference = countDaysInBetween(pastDate, futureDate);
@@ -87,11 +92,9 @@ export const calcRegularIntervals = (pastDate: Date, futureDate: Date, numbersTo
             }
             const middleEnd = addDaysToDate(lastReference, daysToAdd);
             lastReference = middleEnd;
-            const singleIntervalData: IDateMiddleInterval = { middleStart, middleEnd: middleEnd };
+            const singleIntervalData: IDateMiddleInterval = { middleStart, middleEnd: removeOneMs(middleEnd) };
             intervals.push(singleIntervalData);
         }
-        // intervals[intervals.length - 1].middleEnd = addDaysToDate(intervals[intervals.length - 1].middleEnd, lastDaysLeft)
-        // IF there are days left the last day will take it
     } else {
         intervals.push({ middleEnd: futureDate, middleStart: pastDate });
     }
