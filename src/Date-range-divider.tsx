@@ -1,34 +1,38 @@
-import React, { FC, useState, Fragment } from "react";
+import React, { FC, useEffect, useState } from "react";
 import ReactTooltip from "react-tooltip";
 import {
     converDateToEndOfDay,
     countDaysInBetween,
-    convertDateToBeginnigOfDate,
     showFormattedDate,
-    toHTMLInputDate,
-    addDaysToDate,
     calcLeft,
     calcRegularIntervals,
-    IDateMiddleInterval,
+    IMiddleDateInterval,
+    isMoreInTheFuture,
+    convertDateToBeginnigOfDate,
 } from "./utils/Date";
 
 const cssStyles = {
     datebar: {
         border: "1px solid black",
-        height: "45px",
+        height: "30px",
         width: "100%",
         position: "relative" as const,
     },
     singleDate: {
         position: "absolute" as const,
-        height: "45px",
+        height: "36px",
         width: "10px",
+        top: "-3px",
+        boxSizing: "border-box" as const,
+        border: "2px solid #8282824a;",
+        borderRadius: "5px",
+        boxShadow: "0px 0px 3px 3px rgba(0,0,0,0.1)",
     },
     dateRange: {
         zIndex: 1,
         position: "absolute" as const,
-        height: "45px",
-        backgroundColor: "blueviolet",
+        height: "30px",
+        backgroundImage: "linear-gradient(to right, rgb(120,120,120) , rgb(200,200,200))",
     },
     middleStart: {
         zIndex: 2,
@@ -42,36 +46,49 @@ const cssStyles = {
     },
 };
 
-export const DateRangeDivider: FC = () => {
-    const [count, setCount] = useState(1);
+interface DataRangeDividerProps {
+    startDate: string;
+    endDate: string;
+    divisions: number;
+    onChange: (intervals: IMiddleDateInterval[]) => void;
+}
 
-    const [startDate, setStartDate] = useState(new Date("2020/05/01"));
-    const [endDate, setEndDate] = useState(converDateToEndOfDay(new Date("2020/05/11")));
+export const DateRangeDivider: FC<DataRangeDividerProps> = (props: DataRangeDividerProps) => {
+    const [intervals, setIntervals] = useState<IMiddleDateInterval[]>([]);
 
-    const initialDateRangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const initialDate = convertDateToBeginnigOfDate(new Date(event.currentTarget.value));
-        setStartDate(() => initialDate);
+    useEffect(() => {
+        calcIntervals();
+        props.onChange(intervals);
+    }, [props]);
+
+    const calcIntervals = () => {
+        const start = new Date(props.startDate);
+        const end = converDateToEndOfDay(new Date(props.endDate));
+        if (props.divisions > 0 && isMoreInTheFuture(start, end)) {
+            setIntervals(() => calcRegularIntervals(start, end, props.divisions ?? 1));
+        } else {
+            const today = convertDateToBeginnigOfDate(new Date());
+            const todayLater = converDateToEndOfDay(today);
+            setIntervals(() => calcRegularIntervals(today, todayLater, 1));
+        }
     };
 
-    const endDateRangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const finishDate = converDateToEndOfDay(new Date(event.currentTarget.value));
-        setEndDate(() => finishDate);
-    };
-
-    const drawMiddleRange = ({ middleStart, middleEnd }: IDateMiddleInterval) => {
-        const daysBetweenOfStart = countDaysInBetween(startDate, middleStart);
-        const daysBetweenOfEnd = countDaysInBetween(startDate, middleEnd);
+    const drawMiddleRange = ({ start, end }: IMiddleDateInterval) => {
+        const startDate = intervals[0].start;
+        const endDate = intervals[intervals.length - 1].end;
+        const daysBetweenOfStart = countDaysInBetween(startDate, start);
+        const daysBetweenOfEnd = countDaysInBetween(startDate, end);
         const leftStart = calcLeft(countDaysInBetween(startDate, endDate), daysBetweenOfStart);
         const leftEnd = calcLeft(countDaysInBetween(startDate, endDate), daysBetweenOfEnd);
         return (
-            <>
+            <div key={`${start}- ${end}`}>
                 <ReactTooltip />
                 <div
-                    data-tip={`${showFormattedDate(middleStart)}`}
+                    data-tip={`${showFormattedDate(start)}`}
                     style={{ ...cssStyles.singleDate, ...cssStyles.middleStart, left: `calc(${leftStart}% )` }}
                 />
                 <div
-                    data-tip={`${showFormattedDate(middleStart)} - ${showFormattedDate(middleEnd)} `}
+                    data-tip={`${showFormattedDate(start)} - ${showFormattedDate(end)} `}
                     style={{
                         ...cssStyles.dateRange,
                         left: `calc(${leftStart}% )`,
@@ -79,47 +96,12 @@ export const DateRangeDivider: FC = () => {
                     }}
                 />
                 <div
-                    data-tip={`${showFormattedDate(middleEnd)}`}
+                    data-tip={`${showFormattedDate(end)}`}
                     style={{ ...cssStyles.singleDate, ...cssStyles.middleEnd, left: `calc(${leftEnd}% - 5px) ` }}
                 />
-            </>
+            </div>
         );
     };
 
-    return (
-        <Fragment>
-            <p>You clicked {count} times</p>
-            <button onClick={() => setCount(count + 1)}>Click me</button>
-            <br />
-            <br />
-            Init {showFormattedDate(startDate)}
-            <br />
-            <input
-                type="date"
-                value={toHTMLInputDate(addDaysToDate(startDate))}
-                max={toHTMLInputDate(endDate)}
-                onChange={initialDateRangeHandler}
-            />
-            <br />
-            <br />
-            Finish {showFormattedDate(endDate)}
-            <br />
-            <input
-                type="date"
-                value={toHTMLInputDate(endDate)}
-                min={toHTMLInputDate(addDaysToDate(startDate))}
-                onChange={endDateRangeHandler}
-            />
-            <br />
-            <hr />
-            <br />
-            <div style={{ width: "50%" }}>
-                <div style={{ ...cssStyles.datebar }}>
-                    <div style={{ ...cssStyles.singleDate, left: "calc(0% - 5px)" }}></div>
-                    <div style={{ ...cssStyles.singleDate, left: "calc(100% - 5px)" }}></div>
-                    {calcRegularIntervals(startDate, endDate, count).map(drawMiddleRange)}
-                </div>
-            </div>
-        </Fragment>
-    );
+    return <div style={{ ...cssStyles.datebar }}>{intervals.map(drawMiddleRange)}</div>;
 };

@@ -13,7 +13,7 @@ export const getDateElements = (date: Date) => {
     };
 };
 
-export const isInTheFuture = (shouldBePast: Date, shouldBeFuture: Date) => shouldBeFuture > shouldBePast;
+export const isMoreInTheFuture = (shouldBePast: Date, shouldBeFuture: Date) => shouldBeFuture > shouldBePast;
 
 export const convertDateToBeginnigOfDate = (date: Date) => {
     const newD = new Date(date);
@@ -51,22 +51,22 @@ export const toHTMLInputDate = (date: Date): string => date.toISOString().substr
 
 export const calcLeft = (totalDays: number, daysoffset: number) => (daysoffset / totalDays) * 100;
 
-export interface IDateMiddleInterval {
-    middleStart: Date;
-    middleEnd: Date;
+export interface IMiddleDateInterval {
+    start: Date;
+    end: Date;
 }
 
 const removeOneMs = (date: Date) => {
     return new Date(date.valueOf() - 1);
 };
 
-export const calcRegularIntervals = (pastDate: Date, futureDate: Date, numbersToDivide: number) => {
+export const calcRegularIntervals = (pastDate: Date, futureDate: Date, numbersToDivide: number = 1) => {
     const dayDiference = countDaysInBetween(pastDate, futureDate);
     const rawIntervalDiference = dayDiference / numbersToDivide;
     const oddInterval = Math.ceil(rawIntervalDiference);
     const evenInterval = Math.floor(rawIntervalDiference);
 
-    let intervals: IDateMiddleInterval[] = [];
+    let intervals: IMiddleDateInterval[] = [];
     const lastDaysLeft = dayDiference % numbersToDivide;
 
     if (numbersToDivide <= dayDiference) {
@@ -92,11 +92,11 @@ export const calcRegularIntervals = (pastDate: Date, futureDate: Date, numbersTo
             }
             const middleEnd = addDaysToDate(lastReference, daysToAdd);
             lastReference = middleEnd;
-            const singleIntervalData: IDateMiddleInterval = { middleStart, middleEnd: removeOneMs(middleEnd) };
+            const singleIntervalData: IMiddleDateInterval = { start: middleStart, end: removeOneMs(middleEnd) };
             intervals.push(singleIntervalData);
         }
     } else {
-        intervals.push({ middleEnd: futureDate, middleStart: pastDate });
+        intervals.push({ end: futureDate, start: pastDate });
     }
     return intervals;
 };

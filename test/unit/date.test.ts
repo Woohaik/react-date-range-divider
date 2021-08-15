@@ -5,11 +5,34 @@ import {
     convertDateToBeginnigOfDate,
     countDaysInBetween,
     getDateElements,
+    isMoreInTheFuture,
     setAlwaysZeroBeforeDate,
     toHTMLInputDate,
 } from "../../src/utils/Date";
 
 describe("All Date Test", () => {
+    describe("Function with comparations between other dates", () => {
+        describe("isMoreInTheFuture", () => {
+            it("Should return false for a date that is past but past", () => {
+                const isFutureButNotReally = new Date("2020-05-01");
+                const isPastButNotReally = new Date("2020-06-01");
+                const isMoreFuture = isMoreInTheFuture(isPastButNotReally, isFutureButNotReally);
+                expect(isMoreFuture).toBe(false);
+            });
+            it("Should return true for a date that is actually more in the future than other", () => {
+                const imReallyFuture = new Date("2021-05-01");
+                const imReallyPast = new Date("2020-06-01");
+                const isMoreFuture = isMoreInTheFuture(imReallyPast, imReallyFuture);
+                expect(isMoreFuture).toBe(true);
+            });
+            it("Should return false for same date", () => {
+                const oneDatelol = new Date();
+                const isMoreFuture = isMoreInTheFuture(oneDatelol, oneDatelol);
+                expect(isMoreFuture).toBe(false);
+            });
+        });
+    });
+
     describe("Functions with some calc", () => {
         describe("countDaysInBetween", () => {
             it("Should count 1 to days in same day (beggining - end pattern)", () => {
@@ -113,22 +136,22 @@ describe("All Date Test", () => {
                 expect(intervalsOneDay.length).toBe(1);
                 expect(intervalsSameDay.length).toBe(1);
                 expect(intervalsMoreDays.length).toBe(1);
-                expect(intervalsSameDay[0].middleStart).toEqual(startDate);
-                expect(intervalsOneDay[0].middleStart).toEqual(startDate);
-                expect(intervalsMoreDays[0].middleStart).toEqual(startDate);
-                expect(intervalsSameDay[0].middleEnd).toEqual(dates.sameDay.end);
-                expect(intervalsOneDay[0].middleEnd).toEqual(dates.oneDay.end);
-                expect(intervalsMoreDays[0].middleEnd).toEqual(dates.moreDays.end);
+                expect(intervalsSameDay[0].start).toEqual(startDate);
+                expect(intervalsOneDay[0].start).toEqual(startDate);
+                expect(intervalsMoreDays[0].start).toEqual(startDate);
+                expect(intervalsSameDay[0].end).toEqual(dates.sameDay.end);
+                expect(intervalsOneDay[0].end).toEqual(dates.oneDay.end);
+                expect(intervalsMoreDays[0].end).toEqual(dates.moreDays.end);
             });
 
             it("The periods can be divided and do it two equals in lenght", () => {
                 const intervalsOneDay = calcRegularIntervals(startDate, dates.oneDay.end, 2);
                 expect(intervalsOneDay.length).toBe(2);
-                expect(intervalsOneDay[0].middleStart).toEqual(startDate);
-                expect(intervalsOneDay[0].middleEnd).toEqual(converDateToEndOfDay(startDate));
+                expect(intervalsOneDay[0].start).toEqual(startDate);
+                expect(intervalsOneDay[0].end).toEqual(converDateToEndOfDay(startDate));
 
-                expect(intervalsOneDay[1].middleStart).toEqual(addDaysToDate(startDate));
-                expect(intervalsOneDay[1].middleEnd).toEqual(dates.oneDay.end);
+                expect(intervalsOneDay[1].start).toEqual(addDaysToDate(startDate));
+                expect(intervalsOneDay[1].end).toEqual(dates.oneDay.end);
             });
         });
     });
@@ -175,8 +198,8 @@ describe("All Date Test", () => {
 
         describe("toHTMLInputDate", () => {
             it("Should return a string date the HTML input element can understand", () => {
-                const htmlDate = toHTMLInputDate(new Date("Fri May 01 2020"));
-                expect(htmlDate).toBe("2020-04-30");
+                const htmlDate = toHTMLInputDate(new Date("2020-05-01"));
+                expect(htmlDate).toBe("2020-05-01");
             });
         });
     });
