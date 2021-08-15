@@ -24,7 +24,7 @@ const cssStyles = {
         width: "10px",
         top: "-3px",
         boxSizing: "border-box" as const,
-        border: "2px solid #8282824a;",
+        border: "2px solid #8282824a",
         borderRadius: "5px",
         boxShadow: "0px 0px 3px 3px rgba(0,0,0,0.1)",
     },
@@ -47,14 +47,19 @@ const cssStyles = {
 };
 
 interface DataRangeDividerProps {
-    startDate: string;
-    endDate: string;
+    startDate: Date;
+    endDate: Date;
     divisions: number;
     onChange: (intervals: IMiddleDateInterval[]) => void;
 }
 
 export const DateRangeDivider: FC<DataRangeDividerProps> = (props: DataRangeDividerProps) => {
     const [intervals, setIntervals] = useState<IMiddleDateInterval[]>([]);
+    const errorOnArgs = () => {
+        const today = convertDateToBeginnigOfDate(new Date());
+        const todayLater = converDateToEndOfDay(today);
+        setIntervals(() => calcRegularIntervals(today, todayLater, 1));
+    };
 
     useEffect(() => {
         calcIntervals();
@@ -67,9 +72,7 @@ export const DateRangeDivider: FC<DataRangeDividerProps> = (props: DataRangeDivi
         if (props.divisions > 0 && isMoreInTheFuture(start, end)) {
             setIntervals(() => calcRegularIntervals(start, end, props.divisions ?? 1));
         } else {
-            const today = convertDateToBeginnigOfDate(new Date());
-            const todayLater = converDateToEndOfDay(today);
-            setIntervals(() => calcRegularIntervals(today, todayLater, 1));
+            errorOnArgs();
         }
     };
 
