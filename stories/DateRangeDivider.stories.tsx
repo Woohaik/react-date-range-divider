@@ -1,6 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { DateRangeDivider } from '../src';
+import { IMiddleDateInterval } from '../src/utils/Date';
 
 const meta: Meta = {
   title: 'Date Range Divider',
@@ -19,7 +20,13 @@ const meta: Meta = {
 
 export default meta;
 
-const Template: Story = args => <DateRangeDivider {...args} />;
+const Template: Story = args => <DateRangeDivider
+  onChange={(_: IMiddleDateInterval[]) => { }}
+  divisions={1}
+  startDate="2020/05/11"
+  endDate="2020/05/15"
+  {...args}
+/>;
 
 export const Default = Template.bind({});
 
