@@ -7,6 +7,12 @@
     "dist",
     "src"
   ],
+  "keywords": [
+    "date",
+    "dateinterval",
+    "react",
+    "typescript"
+  ],
   "engines": {
     "node": ">=10"
   },

@@ -22,9 +22,9 @@ export default meta;
 
 const Template: Story = args => <DateRangeDivider
   onChange={(_: IMiddleDateInterval[]) => { }}
-  divisions={1}
-  startDate="2020/05/11"
-  endDate="2020/05/15"
+  divisions={2}
+  startDate={new Date("2020/05/11")}
+  endDate={new Date("2020/05/15")}
   {...args}
 />;
 
