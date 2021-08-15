@@ -42,11 +42,11 @@
   "size-limit": [
     {
       "path": "dist/react-date-range-divider.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "13 KB"
     },
     {
       "path": "dist/react-date-range-divider.esm.js",
-      "limit": "10 KB"
+      "limit": "13 KB"
     }
   ],
   "devDependencies": {
