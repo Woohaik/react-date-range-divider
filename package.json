@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -17,9 +17,11 @@
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
+    "commit": "git-cz",
     "analyze": "size-limit --why",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "dev": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
+    "semantic-release": "semantic-release"
   },
   "peerDependencies": {
     "react": ">=16"
@@ -29,11 +31,10 @@
       "pre-commit": "tsdx lint"
     }
   },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
+    }
   },
   "name": "react-date-range-divider",
   "author": "Woohaik",
@@ -41,11 +42,11 @@
   "size-limit": [
     {
       "path": "dist/react-date-range-divider.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "13 KB"
     },
     {
       "path": "dist/react-date-range-divider.esm.js",
-      "limit": "10 KB"
+      "limit": "13 KB"
     }
   ],
   "devDependencies": {
@@ -59,13 +60,27 @@
     "@types/react": "^17.0.17",
     "@types/react-dom": "^17.0.9",
     "babel-loader": "^8.2.2",
+    "cz-conventional-changelog": "^3.3.0",
     "husky": "^7.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-is": "^17.0.2",
+    "semantic-release": "^17.4.4",
     "size-limit": "^5.0.3",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.1",
     "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "react-tooltip": "^4.2.21"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Woohaik/react-date-range-divider.git"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

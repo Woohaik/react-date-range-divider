@@ -1,5 +1,10 @@
 name: CI
-on: [push]
+on: 
+  push:
+    branches: [master]
+  pull_request: 
+    branches:
+      - "*"
 jobs:
   build:
     name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
@@ -30,3 +35,22 @@ jobs:
 
       - name: Build
         run: yarn build
+  
+  publish:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: [build]
+    steps: 
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Use Node ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      
+      - run: npm ci 
+
+      - name: Runs semantic release
+        run: npm run semantic-release
+  
