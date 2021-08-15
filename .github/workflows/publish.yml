@@ -1,12 +1,10 @@
 name: CI
 on: 
   push:
-    branches:
-      - "master"
+    branches: [master]
   pull_request: 
     branches:
       - "*"
-
 jobs:
   build:
     name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
@@ -51,8 +49,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       
-      - name: Ci
-        run: npm ci 
+      - run: npm ci 
 
       - name: Runs semantic release
         run: npm run semantic-release
