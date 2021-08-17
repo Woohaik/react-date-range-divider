@@ -5,3 +5,11 @@ All notable changes to the "react-date-range-divider" extension will be document
 ## [v1.0.0]
 
 - Initial release
+
+## [v1.0.1]
+
+- README updated, args work with Date types.
+
+## [v1.0.2]
+
+- Also exports calcRegularIntervals function if want to use custom calendar and only need divider, README updated

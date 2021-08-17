@@ -23,7 +23,7 @@
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
-    "commit": "git-cz",
+    "commit": "git add .&& git-cz && git push",
     "analyze": "size-limit --why",
     "dev": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
