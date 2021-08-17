@@ -1,5 +1,7 @@
 # react-date-range-divider
 
+[![npm version](https://badge.fury.io/js/react-date-range-divider.svg)](https://badge.fury.io/js/react-date-range-divider)
+
 A react component for divide a date interval into equally distributited intervals at a day level.
 
 ## Installation
@@ -23,7 +25,7 @@ const FooComponent = () => {
             divisions={numOfDivisios}
             startDate={startDate}
             endDate={endDate}
-            onChange={(resultIntervals: IMiddleDateInterval ) => {
+            onChange={(resultIntervals: IMiddleDateInterval[]) => {
                 // Do what you need with intervals
                 setIntervals(() => resultIntervals);
             }}
@@ -38,6 +40,23 @@ In this case the result will be:
 - 14/05/2020 - 00:00:00 => 14/05/2020 - 23:59:59 *(2 days including start and end)*
 
 5 days in total from 11/05/2020 - 15/05/2020. (DD/MM/YYYY)
+
+
+### calcRegularIntervals Function
+If only need to divide intervals without the component, the function can be imported alone.
+
+```tsx
+import { calcRegularIntervals, IMiddleDateInterval } from 'react-date-range-divider';
+
+const startDate = new Date("2020/05/11"); // YYYY/MM/DD 
+const endDate = new Date("2020/05/15");  // YYYY/MM/DD 
+const numOfDivisios = 2;
+
+const intervals: IMiddleDateInterval[] = calcRegularIntervals(startDate, endDate, numOfDivisios); // number to divide is 1 by default
+
+```
+
+
 
 
 
