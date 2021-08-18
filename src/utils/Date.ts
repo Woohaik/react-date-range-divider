@@ -61,20 +61,21 @@ const removeOneMs = (date: Date) => {
 };
 
 export const calcRegularIntervals = (pastDate: Date, futureDate: Date, numbersToDivide: number = 1) => {
+    const toDivide = numbersToDivide < 1 ? 1 : numbersToDivide;
     const dayDiference = countDaysInBetween(pastDate, futureDate);
-    const rawIntervalDiference = dayDiference / numbersToDivide;
+    const rawIntervalDiference = dayDiference / toDivide;
     const oddInterval = Math.ceil(rawIntervalDiference);
     const evenInterval = Math.floor(rawIntervalDiference);
 
     let intervals: IMiddleDateInterval[] = [];
-    const lastDaysLeft = dayDiference % numbersToDivide;
+    const lastDaysLeft = dayDiference % toDivide;
 
-    if (numbersToDivide <= dayDiference) {
+    if (toDivide <= dayDiference) {
         let lastReference = pastDate;
         intervals = [];
         let daysForBeStable = lastDaysLeft;
-        let willWork = numbersToDivide > daysForBeStable * 2;
-        for (let index = 0; index < numbersToDivide; index++) {
+        let willWork = toDivide > daysForBeStable * 2;
+        for (let index = 0; index < toDivide; index++) {
             const middleStart = lastReference;
             let daysToAdd = evenInterval;
             if (lastDaysLeft > 0) {
@@ -98,5 +99,6 @@ export const calcRegularIntervals = (pastDate: Date, futureDate: Date, numbersTo
     } else {
         intervals.push({ end: futureDate, start: pastDate });
     }
+
     return intervals;
 };

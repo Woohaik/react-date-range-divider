@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect } from "react";
 import ReactTooltip from "react-tooltip";
 import {
     converDateToEndOfDay,
@@ -50,35 +50,42 @@ interface DataRangeDividerProps {
     startDate: Date;
     endDate: Date;
     divisions: number;
-    onChange: (intervals: IMiddleDateInterval[]) => void;
+    onDivisionsChange: (intervals: IMiddleDateInterval[]) => void;
 }
 
 export const DateRangeDivider: FC<DataRangeDividerProps> = (props: DataRangeDividerProps) => {
-    const [intervals, setIntervals] = useState<IMiddleDateInterval[]>([]);
     const errorOnArgs = () => {
         const today = convertDateToBeginnigOfDate(new Date());
         const todayLater = converDateToEndOfDay(today);
-        setIntervals(() => calcRegularIntervals(today, todayLater, 1));
+        return calcRegularIntervals(today, todayLater, 1);
     };
 
     useEffect(() => {
-        calcIntervals();
-        props.onChange(intervals);
-    }, [props]);
+        const intervals = calcIntervals();
+        props.onDivisionsChange(intervals);
+    }, [props.divisions]);
 
     const calcIntervals = () => {
-        const start = new Date(props.startDate);
-        const end = converDateToEndOfDay(new Date(props.endDate));
-        if (props.divisions > 0 && isMoreInTheFuture(start, end)) {
-            setIntervals(() => calcRegularIntervals(start, end, props.divisions ?? 1));
-        } else {
-            errorOnArgs();
+        let intervals = [];
+        try {
+            const start = convertDateToBeginnigOfDate(new Date(props.startDate));
+            const end = converDateToEndOfDay(new Date(props.endDate));
+            if (props.divisions > 0 && isMoreInTheFuture(start, end)) {
+                intervals = calcRegularIntervals(start, end, props.divisions);
+            } else {
+                intervals = errorOnArgs();
+            }
+        } catch (error) {
+            console.warn(error);
+            intervals = errorOnArgs();
         }
+
+        return intervals;
     };
 
     const drawMiddleRange = ({ start, end }: IMiddleDateInterval) => {
-        const startDate = intervals[0].start;
-        const endDate = intervals[intervals.length - 1].end;
+        const startDate = convertDateToBeginnigOfDate(props.startDate);
+        const endDate = converDateToEndOfDay(props.endDate);
         const daysBetweenOfStart = countDaysInBetween(startDate, start);
         const daysBetweenOfEnd = countDaysInBetween(startDate, end);
         const leftStart = calcLeft(countDaysInBetween(startDate, endDate), daysBetweenOfStart);
@@ -88,13 +95,13 @@ export const DateRangeDivider: FC<DataRangeDividerProps> = (props: DataRangeDivi
                 <ReactTooltip />
                 <div
                     data-tip={`${showFormattedDate(start)}`}
-                    style={{ ...cssStyles.singleDate, ...cssStyles.middleStart, left: `calc(${leftStart}% )` }}
+                    style={{ ...cssStyles.singleDate, ...cssStyles.middleStart, left: `${leftStart}%` }}
                 />
                 <div
                     data-tip={`${showFormattedDate(start)} - ${showFormattedDate(end)} `}
                     style={{
                         ...cssStyles.dateRange,
-                        left: `calc(${leftStart}% )`,
+                        left: `${leftStart}% `,
                         width: `${leftEnd - leftStart}%`,
                     }}
                 />
@@ -106,5 +113,5 @@ export const DateRangeDivider: FC<DataRangeDividerProps> = (props: DataRangeDivi
         );
     };
 
-    return <div style={{ ...cssStyles.datebar }}>{intervals.map(drawMiddleRange)}</div>;
+    return <div style={{ ...cssStyles.datebar }}>{calcIntervals().map(drawMiddleRange)}</div>;
 };

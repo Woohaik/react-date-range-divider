@@ -2,6 +2,8 @@
 
 [![npm version](https://badge.fury.io/js/react-date-range-divider.svg)](https://badge.fury.io/js/react-date-range-divider)
 
+[![npm downloads](https://badgen.net/npm/dt/react-date-range-divider)](https://badgen.net/npm/dt/react-date-range-divider)
+
 A react component for divide a date interval into equally distributited intervals at a day level.
 
 ## Installation
@@ -25,7 +27,7 @@ const FooComponent = () => {
             divisions={numOfDivisios}
             startDate={startDate}
             endDate={endDate}
-            onChange={(resultIntervals: IMiddleDateInterval[]) => {
+            onDivisionsChange={(resultIntervals: IMiddleDateInterval[]) => {
                 // Do what you need with intervals
                 setIntervals(() => resultIntervals);
             }}
@@ -80,7 +82,7 @@ By passing a endDate lower than the startDate or giving a divisionNumber higher 
 | divisions   | number                                     | Number of division desired of the given period (If this number is higher than the number of days available in the period will take 1 as default) |
 | startDate   | Date                                       | Start date of the parent interval (will convert to the beggining of the passes day. ex: 2020/05/14:12:14:00 => 2020/05/14-00:00:00)              |                                                                                                |
 | endDate     | Date                                       | Finish Date of the parent interval (will convert to the beggining of the passes day. ex: 2020/05/14:12:14:00 => 2020/05/14-23:59:59)             |                                                                                                         |
-| onChange    | (intervals: IMiddleDateInterval[]) => void | callback that passes the resultant intervals as argument                                                                                         |
+| onDivisionsChange    | (intervals: IMiddleDateInterval[]) => void | callback that passes the resultant intervals as argument                                                                                         |
 
 
 ### Types

@@ -21,7 +21,7 @@ const meta: Meta = {
 export default meta;
 
 const Template: Story = args => <DateRangeDivider
-  onChange={(_: IMiddleDateInterval[]) => { }}
+  onDivisionsChange={(_: IMiddleDateInterval[]) => { }}
   divisions={2}
   startDate={new Date("2020/05/11")}
   endDate={new Date("2020/05/15")}
